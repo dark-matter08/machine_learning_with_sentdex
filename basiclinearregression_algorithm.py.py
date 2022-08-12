@@ -29,3 +29,10 @@ plt.scatter(xs, ys)
 plt.scatter(predict_x, predict_y, color='g')
 plt.plot(xs, regression_line)
 plt.show()
+
+# calculating accuracy: we do the squared error
+#  error is the distance between the nearest/farthest point from the line
+
+# calculating the coeficient of determination
+
+# r-squared = 1 - (squared error of the regression line)/(squared error of the mean of the ys)
