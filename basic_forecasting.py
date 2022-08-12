@@ -40,10 +40,16 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 
 # use n_jobs to specify number of threads to run during threading. use -1 to specify the maximum your processor can support
-clf = LinearRegression(n_jobs=-1)
 # clf = svm.SVR()
 # clf = svm.SVR(kernel='poly')
+clf = LinearRegression(n_jobs=-1)
 clf.fit(X_train, y_train)
+
+with open('linearregression.pickle', 'wb') as f:
+    pickle.dump(clf, f)
+
+pickle_in = open('linearregression.pickle', 'rb')
+clf = pickle.load(clf, f)
 
 accuracy = clf.score(X_test, y_test)
 forecast_set = clf.predict(X_lately)
