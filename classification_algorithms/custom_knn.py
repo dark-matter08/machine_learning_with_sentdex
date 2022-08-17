@@ -1,77 +1,75 @@
 import numpy as np
-from math import sqrt
-import matplotlib.pyplot as plt
-from matplotlib import style
 from collections import Counter
 import warnings
-import pandas as pd
-import random
-style.use('fivethirtyeight')
 
 
 # euclidean_distance = sqrt( (X[0] - Y[0])**2 + (X[1] - Y[1])**2 )
 
-dataset = {'k': [[1, 2], [2, 3], [3, 1]], 'r': [[6, 5], [7, 7], [8, 6]]}
-new_features =  [5, 7]
+class CustomKNN:
+    def __init__(self):
+        pass
 
+    def k_nearest_neighbors(self, data, predict, k=3):
+        if len(data) >= k:
+            warnings.warn('K is set to a value less than total voting groups')
+        predict = predict.astype(float).tolist()
+        distances = []
+        for group in data:
+            for features in data[group]:
+                features = features.astype(float).tolist()
+                # euclidean_distance = sqrt( (features[0] - predict[0])**2 + (features[1] - predict[1])**2 )
+                # euclidean_distance = np.sqrt(np.sum((np.array(features) - np.array(predict))**2))
+                euclidean_distance = np.linalg.norm(np.array(features) - np.array(predict))
+                distances.append([euclidean_distance, group])
 
-def k_nearest_neighbors(data, predict, k=3):
-    if len(data) >= k:
-        warnings.warn('K is set to a value less than total voting groups')
+        votes = [i[1] for i in sorted(distances)[:k]]
+        vote_result = Counter(votes).most_common(1)[0][0]
+        confidence = Counter(votes).most_common(1)[0][1] / k
 
-    distances = []
-    for group in data:
-        for features in data[group]:
-            # euclidean_distance = sqrt( (features[0] - predict[0])**2 + (features[1] - predict[1])**2 )
-            # euclidean_distance = np.sqrt(np.sum((np.array(features) - np.array(predict))**2))
-            euclidean_distance = np.linalg.norm(np.array(features) - np.array(predict))
-            distances.append([euclidean_distance, group])
+        return vote_result, confidence
 
-    votes = [i[1] for i in sorted(distances)[:k]]
-    vote_result = Counter(votes).most_common(1)[0][0]
-    confidence = Counter(votes).most_common(1)[0][1] / k
+    def split_data(self, data_x, data_y, test_size=0.2):
+        train_data_x = data_x[:-int(test_size*len(data_x))]
+        train_data_y = data_y[:-int(test_size*len(data_y))]
+        test_data_x = data_x[-int(test_size*len(data_x)):]
+        test_data_y = data_y[-int(test_size*len(data_y)):]
 
-    return vote_result, confidence
+        return train_data_x, test_data_x, train_data_y, test_data_y
 
+    def fit(self, X_train, y_train):
+        classes = set(y_train)
+        train_set = {}
+        
+        for class_ in classes:
+            train_set[class_] = []
 
-# result = k_nearest_neighbors(dataset, new_features, k=3)
-# print(result)
+        for x, y in zip(X_train, y_train):
+            train_set[y].append(x)
 
+        self.train_set = train_set
 
-# [[plt.scatter(ii[0], ii[1], s=100, color=i) for ii in dataset[i]] for i in dataset]
-# plt.scatter(new_features[0], new_features[1], s=100, color=result)
-# plt.show()
-df = pd.read_csv('breast-cancer-wisconsin.data')
-df.replace('?', -99999, inplace=True)
-df.drop(['id'], 1, inplace=True)
-full_data = df.astype(float).values.tolist()
+    def score(self, X_test, y_test):
+        correct = 0
+        total = 0
+        confidences = []
 
-test_size = 0.4
-train_set = {2: [], 4: []}
-test_set = {2: [], 4: []}
+        for data, group in zip(X_test, y_test):
+            vote, confidence = self.k_nearest_neighbors(self.train_set, data, k=5)
+            if group == vote:
+                correct += 1
+                confidences.append(confidence)
 
-train_data = full_data[:-int(test_size*len(full_data))]
-test_data = full_data[-int(test_size*len(full_data)):]
+            total += 1
 
-for i in train_data:
-    train_set[i[-1]].append(i[:-1])
+        accuracy = correct/total
+        final_confidence = sum(confidences)/len(confidences)
 
-for i in test_data:
-    test_set[i[-1]].append(i[:-1])
+        return f"================================\nAccuracy: {accuracy} \n================================\nConfidence: {final_confidence} \n================================"
 
-correct = 0
-total = 0
+    def predict(self, predict):
+        result = []
+        for data in predict:
+            vote, confidence = self.k_nearest_neighbors(self.train_set, data, k=5)
+            result.append(vote)
 
-for group in test_set:
-    for data in test_set[group]:
-        vote, confidence = k_nearest_neighbors(train_set, data, k=5)
-        if group == vote:
-            correct += 1
-        else:
-            # print(confidence)
-            pass
-
-        total += 1
-
-print('Accuracy: ', correct/total)
-
+        return result
