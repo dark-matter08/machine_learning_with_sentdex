@@ -20,7 +20,7 @@
 # if calc = 0 the U falls on the boundary line
 
 
-# ========== Known formulae ===================
+# ========================================= Known formulae ==========================================
 # X(-sv) . W + b = -1
 # X(+sv) . W + b = 1
 
@@ -60,16 +60,16 @@
 
 # L = sum to i of (ALPi) - 1/2(sum to i & j of(ALPi . ALPj . Yi . Yj. (Xi . Xj))) 
 
-# ================================ clearing things ================================================
+# ============================================ clearing things ================================================================
 
 # Equation for hyperplane X . W + b
 # hyperplane for + class = Xi . W + b = 1 (support vectors)
 # hyperplane for - class = Xi . W + b = -1 (support vectors)
 
-#====== The support vector is that member of the class that is closes to the hyperplane of the svm
+# ================== The support vector is that member of the class that is closes to the hyperplane of the svm ==================
 #  The decision boundy hyperplane value X . W + b = 0
 
-# ========= optimizing for W and b ==========
+# ========================================= optimizing for W and b ==============================================================
 # The optimization objective  is 
 # -> minimize ||W||
 # -> maximize b
@@ -82,5 +82,11 @@
 # convex problem
 # vector W is a [1 x 2] matrix
 
+# dot product of 2 vectors gives a scalar
 
+# optimization is a major field in machine learning
+# The Support vector machine is a convex optimization problem
 
+# Libraries for optimization
+# => cvxopt
+# => libsvm
