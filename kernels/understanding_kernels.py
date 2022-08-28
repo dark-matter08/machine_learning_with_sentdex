@@ -24,7 +24,30 @@ K(X, X') = Z . Z'
 
 K(X, X') = (1 + X.X')^p ========================== the above example with the z space assumes p=2 and n=2
 
-k(X, X') = (1 + X.X' + ... + Xn.X'n)^p
+Kn(X, X') = (1 + X.X' + ... + Xn.X'n)^p
+
+where n is the number of dimensions and p i sthe polynomial order
+
+RBF = exp(x) = e^x
+
+
+======================== introducing the soft margin support vector machine ==============================
+
+in a real dataset if more than 10% of the data is a support vector, then you have done an over fitment => try a different kernel
+
+Slack{E}
+introducitn slack in svm
+E >= 0
+
+total slack = sum to i of Ei
+
+Yi(Xi.W + b) >= 1 - E
+
+nominaly, we want to min ||W||
+minimize 1/2(||W||^2) + C[sum to i(Ei)]
+
+The smaller C is the less the slack matters
+
 
 
 
